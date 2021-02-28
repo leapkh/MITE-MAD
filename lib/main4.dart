@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:miteapp/main_screen.dart';
 
 void main() {
   runApp(app);
@@ -8,37 +6,38 @@ void main() {
 
 Widget get app {
   return MaterialApp(
-    title: 'Bottom Navigation',
+    title: 'Stepper App',
     theme: ThemeData(primarySwatch: Colors.purple),
     home: homeScreen,
   );
 }
 
 Widget get homeScreen {
-  return MainScreen();
+  return Scaffold(
+    appBar: appBar,
+    body: body,
+  );
 }
 
 Widget get appBar {
   return AppBar(
-    title: Text('Bottom Navigation'),
+    title: Text('Stepper'),
+    leading: Icon(Icons.home),
+    actions: [IconButton(icon: Icon(Icons.search), onPressed: onSearchClick)],
   );
 }
 
 Widget get body {
-  return Center(
-      child: Checkbox(
-    onChanged: (state) {},
-    value: false,
-  ));
-}
-
-Widget get bottomNavigationBar {
-  return BottomNavigationBar(
-    items: [
-      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-      BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Group'),
-      BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.facebookF), label: 'Social'),
+  return Stepper(
+    type: StepperType.horizontal,
+    currentStep: 1,
+    steps: [
+      Step(
+          isActive: true,
+          title: Text('Delivery'),
+          content: deliveryContentWidget),
+      Step(title: Text('Address'), content: addressContentWidget),
+      Step(title: Text('Payment'), content: paymentContentWidget)
     ],
   );
 }
