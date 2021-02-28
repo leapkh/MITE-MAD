@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:miteapp/main_screen.dart';
+import 'package:miteapp/products_screen.dart';
+import 'package:miteapp/startup_screen2.dart';
 
 void main() {
   runApp(app);
@@ -10,7 +12,7 @@ Widget get app {
   return MaterialApp(
     title: 'Bottom Navigation',
     theme: ThemeData(primarySwatch: Colors.purple),
-    home: homeScreen,
+    home: StartupScreen2(),
   );
 }
 
