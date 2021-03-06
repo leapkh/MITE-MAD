@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miteapp/model/product.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -8,39 +9,55 @@ class CartScreen extends StatefulWidget {
 }
 
 class _State extends State<CartScreen> {
-  int _productQty = 2;
+  List<Product> _products = [
+    Product(1, 'Smart Home Speaker', 100,
+        'https://rupp-ite.s3-ap-southeast-1.amazonaws.com/sok-sao.jpg', 2),
+    Product(2, 'BackPack', 200,
+        'https://rupp-ite.s3-ap-southeast-1.amazonaws.com/sok-sao.jpg', 1)
+  ];
 
   @override
   Widget build(BuildContext context) {
     print('[CartScreen] build');
+    final List<Widget> listViewItemWidgets = [];
+
+    // Generate product list items
+    final productItemWidgets = _products.map((product) {
+      return _cartItemWidget(product);
+    }).toList();
+
+    // Add product list items to listview items
+    listViewItemWidgets.addAll(productItemWidgets);
+
+    // Add static items to listview items
+    listViewItemWidgets.addAll([
+      Divider(),
+      Text(
+        'Have a promo code?',
+      ),
+      _keyValueWidget('Subtotal', _subtotal),
+      _keyValueWidget('Discount', 50),
+      _keyValueWidget('Shipping', 1.5),
+      Divider(),
+      _keyValueWidget('total', _total),
+      _buttonWidget
+    ]);
+
     return Padding(
       padding: EdgeInsets.all(8),
       child: ListView(
-        children: [
-          _cartItemWidget('Smart Home Speaker', 1100, _productQty,
-              'lib/images/img_product1.png'),
-          _cartItemWidget('BackPack', 210, 2, 'lib/images/img_product2.png'),
-          Divider(),
-          Text(
-            'Have a promo code?',
-          ),
-          _keyValueWidget('Subtotal', 3950),
-          _keyValueWidget('Discount', 50),
-          _keyValueWidget('Shipping', 1.5),
-          Divider(),
-          _keyValueWidget('total', 5000),
-          _buttonWidget
-        ],
+        children: listViewItemWidgets,
       ),
     );
   }
 
-  Widget _cartItemWidget(String title, int price, int qty, String imagePath) {
+  Widget _cartItemWidget(Product product) {
 // Image widget
     final imageWidget = Padding(
       padding: EdgeInsets.all(16),
-      child: Image.asset(
-        imagePath,
+      child: FadeInImage.assetNetwork(
+        image: product.imageUrl,
+        placeholder: 'lib/images/img_product1.png',
         width: 80,
         height: 80,
       ),
@@ -51,12 +68,12 @@ class _State extends State<CartScreen> {
       color: Colors.grey,
       child: Row(
         children: [
-          _increaseQtyButton,
+          _increaseQtyButton(product.id),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-            child: Text('$qty'),
+            child: Text('${product.qty}'),
           ),
-          Text('-')
+          _increaseQtyButton(product.id, reversed: true)
         ],
       ),
     );
@@ -64,11 +81,11 @@ class _State extends State<CartScreen> {
     final infoWidget = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title),
+        Text(product.name),
         Padding(
           padding: EdgeInsets.only(top: 4, bottom: 8),
           child: Text(
-            '\$$price',
+            '\$${product.price}',
             style: TextStyle(color: Colors.orange),
           ),
         ),
@@ -109,13 +126,39 @@ class _State extends State<CartScreen> {
     print('You click checkout!');
   }
 
-  Widget get _increaseQtyButton {
-    return GestureDetector(onTap: _onIncreaseQtyClick, child: Text('+'));
+  Widget _increaseQtyButton(int productId, {bool reversed = false}) {
+    return GestureDetector(
+        onTap: () {
+          _products.forEach((element) {
+            if (element.id == productId) {
+              setState(() {
+                if (reversed) {
+                  if (element.qty == 1) {
+                    // Remove the product
+                    _products.remove(element);
+                  } else {
+                    // Decrease qty
+                    element.qty--;
+                  }
+                } else {
+                  element.qty++;
+                }
+              });
+            }
+          });
+        },
+        child: Text(reversed ? '-' : '+'));
   }
 
-  void _onIncreaseQtyClick() {
-    setState(() {
-      _productQty++;
+  double get _subtotal {
+    double subtotal = 0;
+    _products.forEach((product) {
+      subtotal += product.price * product.qty;
     });
+    return subtotal;
+  }
+
+  double get _total {
+    return _subtotal - 50 + 1.5;
   }
 }
