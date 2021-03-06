@@ -1,53 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:miteapp/subscreen/account_screen.dart';
+import 'package:miteapp/subscreen/cart_screen.dart';
+import 'package:miteapp/subscreen/home_screen.dart';
+import 'package:miteapp/subscreen/more_screen.dart';
+import 'package:miteapp/subscreen/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _State();
-  }
+  State<StatefulWidget> createState() => _State();
 }
 
 class _State extends State<MainScreen> {
-  bool isCheckboxChecked = false;
+  int _currentNavIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    print('Build');
+    print('[MainScreen] build');
     return Scaffold(
-      appBar: appBar,
-      body: body,
-      bottomNavigationBar: bottomNavigationBar,
+      bottomNavigationBar: _bottomNavigationBar,
+      body: _body,
     );
   }
 
-  Widget get appBar {
-    return AppBar(
-      title: Text('Bottom Navigation'),
-    );
-  }
-
-  Widget get body {
-    return Center(
-        child: Checkbox(
-      onChanged: (state) {
-        print('change state');
-        setState(() {
-          isCheckboxChecked = !isCheckboxChecked;
-        });
-      },
-      value: isCheckboxChecked,
-    ));
-  }
-
-  Widget get bottomNavigationBar {
+  Widget get _bottomNavigationBar {
     return BottomNavigationBar(
+      currentIndex: _currentNavIndex,
+      type: BottomNavigationBarType.fixed,
       items: [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Group'),
         BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.facebookF), label: 'Social'),
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle), label: 'Account'),
+        BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'More'),
       ],
+      onTap: _onBottomNavBarItemClick,
     );
+  }
+
+  Widget get _body {
+    if (_currentNavIndex == 0) {
+      return HomeScreen();
+    } else if (_currentNavIndex == 1) {
+      return SearchScreen();
+    } else if (_currentNavIndex == 2) {
+      return CartScreen();
+    } else if (_currentNavIndex == 3) {
+      return AccountScreen();
+    } else {
+      return MoreScreen();
+    }
+  }
+
+  void _onBottomNavBarItemClick(int clickIndex) {
+    setState(() {
+      _currentNavIndex = clickIndex;
+    });
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:miteapp/like_button.dart';
+import 'package:miteapp/backup/like_button.dart';
 
 class StartupScreen extends StatelessWidget {
   @override
