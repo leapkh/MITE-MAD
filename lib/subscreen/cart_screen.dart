@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miteapp/model/product.dart';
+import 'package:miteapp/screen/product_detail_screen.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -93,8 +94,13 @@ class _State extends State<CartScreen> {
       ],
     );
 
-    return Row(
-      children: [imageWidget, infoWidget],
+    return GestureDetector(
+      onTap: () {
+        _moveToProductDetailScreen(product);
+      },
+      child: Row(
+        children: [imageWidget, infoWidget],
+      ),
     );
   }
 
@@ -160,5 +166,15 @@ class _State extends State<CartScreen> {
 
   double get _total {
     return _subtotal - 50 + 1.5;
+  }
+
+  void _moveToProductDetailScreen(Product product) {
+    // Using push()
+    final route =
+        MaterialPageRoute(builder: (context) => ProductDetailScreen(product));
+    Navigator.push(context, route);
+
+    // Using pushNamed()
+    //Navigator.pushNamed(context, '/productDetail', arguments: product);
   }
 }
